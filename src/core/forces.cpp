@@ -130,7 +130,7 @@ static void init_forces(const ParticleRange &particles,
     RANDOM NUMBERS NEEDED
     */
     std::random_device rd;
-    std::mt19937 gen(red());
+    std::mt19937 gen(rd());
     std::normal_distribution<> gaussianDist(0,1);
 
     /* Update of the viscoelastic force */
