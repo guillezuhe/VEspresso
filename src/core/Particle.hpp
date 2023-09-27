@@ -252,8 +252,8 @@ struct ParticleProperties {
     ar &ext_flag;
     ar &ext_force;
     ar &visc_force;
-    ar &qv
-    ar &taum
+    ar &qv;
+    ar &taum;
 #ifdef ROTATION
     ar &ext_torque;
 #endif

@@ -128,8 +128,8 @@ static void init_forces(const ParticleRange &particles,
 
     /* Update of the viscoelastic force */
     for (int j = 0; j < 3; j++) {
-      if (!p.is_fixed_along(j) & thermo_switch) {
-        p.visc_force()[j] -= ((p.visc_force()[j] + p.qv() * abs(p.gamma()[j]) * p.v()[j]) * time_step + \ 
+      if ((!p.is_fixed_along(j)) && thermo_switch) {
+        p.visc_force()[j] -= ((p.visc_force()[j] + p.qv() * abs(p.gamma()[j]) * p.v()[j]) * time_step + \
         sqrt(2 * p.qv() * abs(p.gamma()[j]) * kT * time_step) * p.ext_torque()[j]) / p.taum();
       }
     }
