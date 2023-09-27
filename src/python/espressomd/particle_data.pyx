@@ -832,7 +832,7 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                return get_particle_qv(self.particle_data)
+                return self.particle_data.qv()
 
         property taum:
             """
@@ -851,7 +851,7 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                return get_particle_taum(self.particle_data)
+                return self.particle_data.taum()
 
         property fix:
             """
