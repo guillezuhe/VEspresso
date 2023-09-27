@@ -188,7 +188,7 @@ void force_calc(CellStructure &cell_structure, double time_step, double kT) {
 #endif
   init_forces(particles, ghost_particles, time_step, kT);
 
-  viscoelastic_forces(particles, time_step, kT)
+  viscoelastic_forces(particles, time_step, kT);
 
   calc_long_range_forces(particles);
 
