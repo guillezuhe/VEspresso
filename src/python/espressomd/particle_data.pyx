@@ -793,6 +793,27 @@ cdef class ParticleHandle:
                 self.update_particle_data()
                 return make_array_locked(
                     self.particle_data.ext_force())
+        
+        property visc_force:
+            """
+            An additional viscoelastic force applied to the particle.
+
+            visc_force : (3,) array_like of :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL_FORCES``.
+
+            """
+
+            def __set__(self, _visc_f):
+                check_type_or_throw_except(
+                    _visc_f, 3, float, "Viscoelastic force vector has to be 3 floats.")
+                set_particle_visc_force(self._id, make_Vector3d(_visc_f))
+
+            def __get__(self):
+                self.update_particle_data()
+                return make_array_locked(
+                    self.particle_data.visc_force())
 
         property fix:
             """

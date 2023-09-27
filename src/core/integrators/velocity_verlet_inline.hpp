@@ -26,6 +26,7 @@
 #include "cell_system/CellStructure.hpp"
 #include "integrate.hpp"
 #include "rotation.hpp"
+#include <cmath>
 
 /** Propagate the velocities and positions. Integration steps before force
  *  calculation of the Velocity Verlet integrator: <br> \f[ v(t+0.5 \Delta t) =
@@ -46,11 +47,14 @@ inline void velocity_verlet_propagate_vel_pos(const ParticleRange &particles,
     for (int j = 0; j < 3; j++) {
       if (!p.is_fixed_along(j)) {
         /* Propagate velocities: v(t+0.5*dt) = v(t) + 0.5 * dt * a(t) */
-        p.v()[j] += 0.5 * time_step * p.force()[j] / p.mass();
+        p.v()[j] += 0.5 * time_step * (p.force()[j] + p.visc_force()[j]) / p.mass();
 
         /* Propagate positions (only NVT): p(t + dt)   = p(t) + dt *
          * v(t+0.5*dt) */
         p.pos()[j] += time_step * p.v()[j];
+
+        /* Update of the viscoelastic force */
+        p.visc_force()[j] -= ((p.visc_force()[j] + 20.0 * p.v()[j]) * time_step + sqrt(2 * 20.0 * time_step) * p.ext_torque()[j]) / 1.05;
       }
     }
   }
@@ -70,7 +74,7 @@ inline void velocity_verlet_propagate_vel_final(const ParticleRange &particles,
     for (int j = 0; j < 3; j++) {
       if (!p.is_fixed_along(j)) {
         /* Propagate velocity: v(t+dt) = v(t+0.5*dt) + 0.5*dt * a(t+dt) */
-        p.v()[j] += 0.5 * time_step * p.force()[j] / p.mass();
+        p.v()[j] += 0.5 * time_step * (p.force()[j] + p.visc_force()[j]) / p.mass();
       }
     }
   }

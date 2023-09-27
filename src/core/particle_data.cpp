@@ -136,6 +136,7 @@ using UpdatePropertyMessage = boost::variant
 #ifdef EXTERNAL_FORCES
         , UpdateProperty<uint8_t, &Prop::ext_flag>
         , UpdateProperty<Utils::Vector3d, &Prop::ext_force>
+        , UpdateProperty<Utils::Vector3d, &Prop::visc_force>
 #ifdef ROTATION
         , UpdateProperty<Utils::Vector3d, &Prop::ext_torque>
 #endif
@@ -604,6 +605,11 @@ void set_particle_ext_torque(int part, const Utils::Vector3d &torque) {
 
 void set_particle_ext_force(int part, const Utils::Vector3d &force) {
   mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::ext_force>(
+      part, force);
+}
+
+void set_particle_visc_force(int part, const Utils::Vector3d &force) {
+  mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::visc_force>(
       part, force);
 }
 

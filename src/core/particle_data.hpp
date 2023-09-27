@@ -216,6 +216,16 @@ void set_particle_ext_torque(int part, const Utils::Vector3d &torque);
  *  @param force new value for ext_force.
  */
 void set_particle_ext_force(int part, const Utils::Vector3d &force);
+/** Call only on the head node: set particle viscoelastic force.
+ *  @param part  the particle.
+ *  @param force new value for visc_force.
+ */
+void set_particle_visc_force(int part, const Utils::Vector3d &force);
+/** Call only on the head node: set coordinate axes for which the particles
+ *  motion is fixed.
+ *  @param part  the particle.
+ *  @param flag  coordinates to be fixed.
+ */
 /** Call only on the head node: set coordinate axes for which the particles
  *  motion is fixed.
  *  @param part  the particle.

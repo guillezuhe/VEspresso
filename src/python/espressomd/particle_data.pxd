@@ -65,6 +65,7 @@ cdef extern from "Particle.hpp":
         double dipm()
         bint is_virtual()
         Vector3d ext_force()
+        Vector3d visc_force()
         Vector3d ext_torque()
         vector[int] exclusions_as_vector() except +
         bool has_exclusion(int pid) except +
@@ -139,6 +140,7 @@ cdef extern from "particle_data.hpp":
             void set_particle_ext_torque(int part, const Vector3d & torque)
 
         void set_particle_ext_force(int part, const Vector3d & force)
+        void set_particle_visc_force(int part, const Vector3d & force)
 
         void set_particle_fix(int part, const Vector3i & flag)
         Vector3i get_particle_fix(const particle * p)
