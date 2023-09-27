@@ -47,7 +47,7 @@ inline void velocity_verlet_propagate_vel_pos(const ParticleRange &particles,
     for (int j = 0; j < 3; j++) {
       if (!p.is_fixed_along(j)) {
         /* Propagate velocities: v(t+0.5*dt) = v(t) + 0.5 * dt * a(t) */
-        p.v()[j] += 0.5 * time_step * (p.force()[j] + p.visc_force()[j]) / p.mass();
+        p.v()[j] += 0.5 * time_step * p.force()[j] / p.mass();
 
         /* Propagate positions (only NVT): p(t + dt)   = p(t) + dt *
          * v(t+0.5*dt) */
@@ -72,7 +72,7 @@ inline void velocity_verlet_propagate_vel_final(const ParticleRange &particles,
     for (int j = 0; j < 3; j++) {
       if (!p.is_fixed_along(j)) {
         /* Propagate velocity: v(t+dt) = v(t+0.5*dt) + 0.5*dt * a(t+dt) */
-        p.v()[j] += 0.5 * time_step * (p.force()[j] + p.visc_force()[j]) / p.mass();
+        p.v()[j] += 0.5 * time_step * p.force()[j] / p.mass();
       }
     }
   }

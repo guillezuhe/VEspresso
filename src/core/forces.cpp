@@ -126,21 +126,6 @@ static void init_forces(const ParticleRange &particles,
      set torque to zero for all and rescale quaternions
   */
   for (auto &p : particles) {
-    /*
-    RANDOM NUMBERS NEEDED
-    */
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<> gaussianDist(0,1);
-
-    /* Update of the viscoelastic force */
-    for (int j = 0; j < 3; j++) {
-      if ((!p.is_fixed_along(j)) && thermo_switch) {
-        double randomG = gaussianDist(gen);
-        p.visc_force()[j] -= ((p.visc_force()[j] + p.qv() * abs(p.gamma()[j]) * p.v()[j]) * time_step + \
-        sqrt(2 * p.qv() * abs(p.gamma()[j]) * kT * time_step) * randomG) / p.taum();
-      }
-    }
     p.f = init_real_particle_force(p, time_step, kT);
   }
 
@@ -155,6 +140,29 @@ static void init_forces(const ParticleRange &particles,
 void init_forces_ghosts(const ParticleRange &particles) {
   for (auto &p : particles) {
     p.f = init_ghost_force(p);
+  }
+}
+
+void viscoelastic_forces(const ParticleRange &particles, double time_step, double kT) {
+    
+  /*
+    RANDOM NUMBERS NEEDED
+  */
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::normal_distribution<> gaussianDist(0,1);
+
+  for (auto &p : particles) {
+    /* Update of the viscoelastic force */
+    for (int j = 0; j < 3; j++) {
+      if ((!p.is_fixed_along(j)) && thermo_switch) {
+        double randomG = gaussianDist(gen);
+        p.visc_force()[j] -= ((p.visc_force()[j] + p.qv() * abs(p.gamma()[j]) * p.v()[j]) * time_step + \
+        sqrt(2 * p.qv() * abs(p.gamma()[j]) * kT * time_step) * randomG) / p.taum();
+      }
+    }
+    p.f += p.visc_force();
   }
 }
 
@@ -179,6 +187,8 @@ void force_calc(CellStructure &cell_structure, double time_step, double kT) {
   }
 #endif
   init_forces(particles, ghost_particles, time_step, kT);
+
+  viscoelastic_forces(particles, time_step, kT)
 
   calc_long_range_forces(particles);
 
