@@ -221,6 +221,11 @@ void set_particle_ext_force(int part, const Utils::Vector3d &force);
  *  @param force new value for visc_force.
  */
 void set_particle_visc_force(int part, const Utils::Vector3d &force);
+
+void set_particle_qv(int part, double qv);
+
+void set_particle_taum(int part, double taum);
+
 /** Call only on the head node: set coordinate axes for which the particles
  *  motion is fixed.
  *  @param part  the particle.

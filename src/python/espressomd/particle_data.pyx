@@ -814,6 +814,44 @@ cdef class ParticleHandle:
                 self.update_particle_data()
                 return make_array_locked(
                     self.particle_data.visc_force())
+        
+        property qv:
+            """
+            Viscoelastic ratio gammaM / gammaN.
+
+            qv : :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _qv):
+                check_type_or_throw_except(
+                    _qv, 1, float, "qv has to be a float.")
+                set_particle_qv(self._id, _qv)
+
+            def __get__(self):
+                self.update_particle_data()
+                return get_particle_qv(self.particle_data)
+
+        property taum:
+            """
+            Viscoelastic relaxation time.
+
+            taum : :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _taum):
+                check_type_or_throw_except(
+                    _taum, 1, float, "taum has to be a float.")
+                set_particle_taum(self._id, _taum)
+
+            def __get__(self):
+                self.update_particle_data()
+                return get_particle_taum(self.particle_data)
 
         property fix:
             """

@@ -53,8 +53,6 @@ inline void velocity_verlet_propagate_vel_pos(const ParticleRange &particles,
          * v(t+0.5*dt) */
         p.pos()[j] += time_step * p.v()[j];
 
-        /* Update of the viscoelastic force */
-        p.visc_force()[j] -= ((p.visc_force()[j] + 20.0 * p.v()[j]) * time_step + sqrt(2 * 20.0 * time_step) * p.ext_torque()[j]) / 1.05;
       }
     }
   }

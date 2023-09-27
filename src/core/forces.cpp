@@ -58,6 +58,7 @@
 #include <profiler/profiler.hpp>
 
 #include <cassert>
+#include <cmath>
 
 /** Initialize the forces for a ghost particle */
 inline ParticleForce init_ghost_force(Particle const &) { return {}; }
@@ -124,6 +125,14 @@ static void init_forces(const ParticleRange &particles,
      set torque to zero for all and rescale quaternions
   */
   for (auto &p : particles) {
+
+    /* Update of the viscoelastic force */
+    for (int j = 0; j < 3; j++) {
+      if (!p.is_fixed_along(j) & thermo_switch) {
+        p.visc_force()[j] -= ((p.visc_force()[j] + p.qv() * abs(p.gamma()[j]) * p.v()[j]) * time_step + \ 
+        sqrt(2 * p.qv() * abs(p.gamma()[j]) * kT * time_step) * p.ext_torque()[j]) / p.taum();
+      }
+    }
     p.f = init_real_particle_force(p, time_step, kT);
   }
 

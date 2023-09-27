@@ -199,6 +199,8 @@ struct ParticleProperties {
   /** External force. */
   Utils::Vector3d ext_force = {0., 0., 0.};
   Utils::Vector3d visc_force = {0., 0., 0.};
+  double qv = 0.;
+  double taum = 0.;
 #ifdef ROTATION
   /** External torque. */
   Utils::Vector3d ext_torque = {0., 0., 0.};
@@ -250,6 +252,8 @@ struct ParticleProperties {
     ar &ext_flag;
     ar &ext_force;
     ar &visc_force;
+    ar &qv
+    ar &taum
 #ifdef ROTATION
     ar &ext_torque;
 #endif
@@ -557,6 +561,10 @@ public:
   auto &ext_force() { return p.ext_force; }
   auto const &visc_force() const { return p.visc_force; }
   auto &visc_force() { return p.visc_force; }
+  auto const &qv() const { return p.qv; }
+  auto &qv() { return p.qv; }
+  auto const &taum() const { return p.taum; }
+  auto &taum() { return p.taum; }
 #else  // EXTERNAL_FORCES
   constexpr bool has_fixed_coordinates() const { return false; }
   constexpr bool is_fixed_along(int const) const { return false; }

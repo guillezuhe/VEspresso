@@ -137,6 +137,8 @@ using UpdatePropertyMessage = boost::variant
         , UpdateProperty<uint8_t, &Prop::ext_flag>
         , UpdateProperty<Utils::Vector3d, &Prop::ext_force>
         , UpdateProperty<Utils::Vector3d, &Prop::visc_force>
+        , UpdateProperty<double, &Prop::qv>
+        , UpdateProperty<double, &Prop::taum>
 #ifdef ROTATION
         , UpdateProperty<Utils::Vector3d, &Prop::ext_torque>
 #endif
@@ -608,9 +610,20 @@ void set_particle_ext_force(int part, const Utils::Vector3d &force) {
       part, force);
 }
 
+// VISCOELASTIC FORCE
 void set_particle_visc_force(int part, const Utils::Vector3d &force) {
   mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::visc_force>(
       part, force);
+}
+
+// VISCOELASTIC PARAMETER q
+void set_particle_qv(int part, double qv) {
+  mpi_update_particle_property<double, &ParticleProperties::qv>(part, qv);
+}
+
+// VISCOELASTIC PARAMETER tau_m
+void set_particle_taum(int part, double taum) {
+  mpi_update_particle_property<double, &ParticleProperties::taum>(part, taum);
 }
 
 void set_particle_fix(int part, Utils::Vector3i const &flag) {
