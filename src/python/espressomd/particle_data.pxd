@@ -68,6 +68,9 @@ cdef extern from "Particle.hpp":
         Vector3d visc_force()
         double qv()
         double taum()
+        double vcrit()
+        double aexp()
+        double bexp()
         Vector3d ext_torque()
         vector[int] exclusions_as_vector() except +
         bool has_exclusion(int pid) except +
@@ -145,6 +148,9 @@ cdef extern from "particle_data.hpp":
         void set_particle_visc_force(int part, const Vector3d & force)
         void set_particle_qv(int part, double qv)
         void set_particle_taum(int part, double taum)
+        void set_particle_vcrit(int part, double vcrit)
+        void set_particle_aexp(int part, double aexp)
+        void set_particle_bexp(int part, double bexp)
 
         void set_particle_fix(int part, const Vector3i & flag)
         Vector3i get_particle_fix(const particle * p)

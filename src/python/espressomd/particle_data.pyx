@@ -853,6 +853,63 @@ cdef class ParticleHandle:
                 self.update_particle_data()
                 return self.particle_data.taum()
 
+        property vcrit:
+            """
+            Viscoelastic critical velocity.
+
+            vcrit : :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _vcrit):
+                check_type_or_throw_except(
+                    _vcrit, 1, float, "vcrit has to be a float.")
+                set_particle_vcrit(self._id, _vcrit)
+
+            def __get__(self):
+                self.update_particle_data()
+                return self.particle_data.vcrit()
+
+        property aexp:
+            """
+            Viscoelastic viscosity exponent a.
+
+            aexp : :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _aexp):
+                check_type_or_throw_except(
+                    _aexp, 1, float, "aexp has to be a float.")
+                set_particle_aexp(self._id, _aexp)
+
+            def __get__(self):
+                self.update_particle_data()
+                return self.particle_data.aexp()
+
+        property bexp:
+            """
+            Viscoelastic viscosity exponent b.
+
+            bexp : :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _bexp):
+                check_type_or_throw_except(
+                    _bexp, 1, float, "bexp has to be a float.")
+                set_particle_bexp(self._id, _bexp)
+
+            def __get__(self):
+                self.update_particle_data()
+                return self.particle_data.bexp()
+                
         property fix:
             """
             Fixes the particle motion in the specified cartesian directions.

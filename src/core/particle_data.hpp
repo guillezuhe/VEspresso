@@ -226,6 +226,12 @@ void set_particle_qv(int part, double qv);
 
 void set_particle_taum(int part, double taum);
 
+void set_particle_vcrit(int part, double vcrit);
+
+void set_particle_aexp(int part, double aexp);
+
+void set_particle_bexp(int part, double bexp);
+
 /** Call only on the head node: set coordinate axes for which the particles
  *  motion is fixed.
  *  @param part  the particle.

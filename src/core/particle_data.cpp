@@ -139,6 +139,9 @@ using UpdatePropertyMessage = boost::variant
         , UpdateProperty<Utils::Vector3d, &Prop::visc_force>
         , UpdateProperty<double, &Prop::qv>
         , UpdateProperty<double, &Prop::taum>
+        , UpdateProperty<double, &Prop::vcrit>
+        , UpdateProperty<double, &Prop::aexp>
+        , UpdateProperty<double, &Prop::bexp>
 #ifdef ROTATION
         , UpdateProperty<Utils::Vector3d, &Prop::ext_torque>
 #endif
@@ -621,9 +624,24 @@ void set_particle_qv(int part, double qv) {
   mpi_update_particle_property<double, &ParticleProperties::qv>(part, qv);
 }
 
-// VISCOELASTIC PARAMETER tau_m
+// VISCOELASTIC PARAMETER taum
 void set_particle_taum(int part, double taum) {
   mpi_update_particle_property<double, &ParticleProperties::taum>(part, taum);
+}
+
+// VISCOELASTIC PARAMETER vcrit
+void set_particle_vcrit(int part, double vcrit) {
+  mpi_update_particle_property<double, &ParticleProperties::vcrit>(part, vcrit);
+}
+
+// VISCOELASTIC PARAMETER aexp
+void set_particle_aexp(int part, double aexp) {
+  mpi_update_particle_property<double, &ParticleProperties::aexp>(part, aexp);
+}
+
+// VISCOELASTIC PARAMETER bexp
+void set_particle_bexp(int part, double bexp) {
+  mpi_update_particle_property<double, &ParticleProperties::bexp>(part, bexp);
 }
 
 void set_particle_fix(int part, Utils::Vector3i const &flag) {
