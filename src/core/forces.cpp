@@ -151,7 +151,7 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
     
   double vmod2 = 0.0;
   double visc = 0.0;
-  double nu = 0.0;  
+  double nu = 0.0;
 
   /*
     RANDOM NUMBERS NEEDED
@@ -162,25 +162,27 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
   std::normal_distribution<> gaussianDist(0,1);
 
   for (auto &p : particles) {
-    if (p.qv() > 0) {
+    if (p.qv()[0] > 0) {
       /* Computation of velocity modulus squared */
       vmod2 = 0.0;
       for (int j = 0; j < 3; j++) {
         vmod2 += p.v()[j] * p.v()[j];
       }
 
-      visc = calc_viscosity(vmod2, p.qv() * p.gamma()[0], p.vcrit(), p.aexp(), p.bexp());
-      nu = 1.0 / p.taum();
-
       /* Update of the viscoelastic force */
-      for (int j = 0; j < 3; j++) {
-        if ((!p.is_fixed_along(j)) && thermo_switch) {
-          double randomG = gaussianDist(gen);
-          p.visc_force()[j] -= ((nu * p.visc_force()[j] + p.v()[j]) * time_step + \
-          sqrt(2 * kT * time_step / visc) * randomG);
+      for (int k = 0; k < p.Nk(); k++) {
+        visc = calc_viscosity(vmod2, p.qv()[k] * p.visc_gamma()[0], p.vcrit()[k], p.aexp()[k], p.bexp()[k]);
+        nu = 1.0 / p.taum()[k];
+        for (int j = 0; j < 3; j++) {
+          if ((!p.is_fixed_along(j)) && thermo_switch) {
+            double randomG = gaussianDist(gen);
+            p.visc_force_mat()(k,j) -= ((nu * p.visc_force_mat()(k,j) + p.v()[j]) * time_step + \
+            sqrt(2 * kT * time_step / visc) * randomG);
+            p.visc_force()[j] = p.visc_force_mat()(k,j);
+          }
         }
+        p.f += nu * visc * p.visc_force();
       }
-      p.f += nu * visc * p.visc_force();
     }
   }
 }

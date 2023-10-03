@@ -137,11 +137,14 @@ using UpdatePropertyMessage = boost::variant
         , UpdateProperty<uint8_t, &Prop::ext_flag>
         , UpdateProperty<Utils::Vector3d, &Prop::ext_force>
         , UpdateProperty<Utils::Vector3d, &Prop::visc_force>
-        , UpdateProperty<double, &Prop::qv>
-        , UpdateProperty<double, &Prop::taum>
-        , UpdateProperty<double, &Prop::vcrit>
-        , UpdateProperty<double, &Prop::aexp>
-        , UpdateProperty<double, &Prop::bexp>
+        , UpdateProperty<Utils::Matrix<double,20,3>, &Prop::visc_force_mat>
+        , UpdateProperty<Utils::Vector3d, &Prop::visc_gamma>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::qv>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::taum>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::vcrit>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::aexp>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::bexp>
+        , UpdateProperty<int, &Prop::Nk>
 #ifdef ROTATION
         , UpdateProperty<Utils::Vector3d, &Prop::ext_torque>
 #endif
@@ -619,29 +622,66 @@ void set_particle_visc_force(int part, const Utils::Vector3d &force) {
       part, force);
 }
 
+// VISCOELASTIC FORCE MATRIX
+void set_particle_visc_force_mat(int part, const Utils::Matrix<double,20,3> &force_mat) {
+  mpi_update_particle_property<Utils::Matrix<double,20,3>, &ParticleProperties::visc_force_mat>(
+      part, force_mat);
+}
+
+// VISCOELASTIC GAMMA
+void set_particle_visc_gamma(int part, const Utils::Vector3d &visc_gamma) {
+  mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::visc_gamma>(
+      part, visc_gamma);
+}
+
 // VISCOELASTIC PARAMETER q
-void set_particle_qv(int part, double qv) {
-  mpi_update_particle_property<double, &ParticleProperties::qv>(part, qv);
+void set_particle_qv(int part, const std::vector<double> &qv) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = qv[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::qv>(part, utilsVector);
 }
 
 // VISCOELASTIC PARAMETER taum
-void set_particle_taum(int part, double taum) {
-  mpi_update_particle_property<double, &ParticleProperties::taum>(part, taum);
+void set_particle_taum(int part, const std::vector<double> &taum) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = taum[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::taum>(part, utilsVector);
 }
 
 // VISCOELASTIC PARAMETER vcrit
-void set_particle_vcrit(int part, double vcrit) {
-  mpi_update_particle_property<double, &ParticleProperties::vcrit>(part, vcrit);
+void set_particle_vcrit(int part, const std::vector<double> &vcrit) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = vcrit[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::vcrit>(part, utilsVector);
 }
 
 // VISCOELASTIC PARAMETER aexp
-void set_particle_aexp(int part, double aexp) {
-  mpi_update_particle_property<double, &ParticleProperties::aexp>(part, aexp);
+void set_particle_aexp(int part, const std::vector<double> &aexp) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = aexp[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::aexp>(part, utilsVector);
 }
 
 // VISCOELASTIC PARAMETER bexp
-void set_particle_bexp(int part, double bexp) {
-  mpi_update_particle_property<double, &ParticleProperties::bexp>(part, bexp);
+void set_particle_bexp(int part, const std::vector<double> &bexp) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = bexp[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::bexp>(part, utilsVector);
+}
+
+// NUMBER OF PRONY MODES
+void set_particle_Nk(int part, int Nk) {
+  mpi_update_particle_property<int, &ParticleProperties::Nk>(part, Nk);
 }
 
 void set_particle_fix(int part, Utils::Vector3i const &flag) {

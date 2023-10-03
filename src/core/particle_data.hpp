@@ -221,16 +221,25 @@ void set_particle_ext_force(int part, const Utils::Vector3d &force);
  *  @param force new value for visc_force.
  */
 void set_particle_visc_force(int part, const Utils::Vector3d &force);
+/** Call only on the head node: set particle viscoelastic force matrix.
+ *  @param part  the particle.
+ *  @param force_mat new value for visc_force_mat.
+ */
+void set_particle_visc_force_mat(int part, const Utils::Matrix<double,20,3> &force_mat);
 
-void set_particle_qv(int part, double qv);
+void set_particle_visc_gamma(int part, const Utils::Vector3d &visc_gamma);
 
-void set_particle_taum(int part, double taum);
+void set_particle_qv(int part, const std::vector<double> &qv);
 
-void set_particle_vcrit(int part, double vcrit);
+void set_particle_taum(int part, const std::vector<double> &taum);
 
-void set_particle_aexp(int part, double aexp);
+void set_particle_vcrit(int part, const std::vector<double> &vcrit);
 
-void set_particle_bexp(int part, double bexp);
+void set_particle_aexp(int part, const std::vector<double> &aexp);
+
+void set_particle_bexp(int part, const std::vector<double> &bexp);
+
+void set_particle_Nk(int part, int Nk);
 
 /** Call only on the head node: set coordinate axes for which the particles
  *  motion is fixed.

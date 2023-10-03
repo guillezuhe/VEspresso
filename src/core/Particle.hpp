@@ -27,6 +27,7 @@
 #include <utils/compact_vector.hpp>
 #include <utils/math/quaternion.hpp>
 #include <utils/quaternion.hpp>
+#include <utils/matrix.hpp>
 
 #include <boost/container/vector.hpp>
 #include <boost/serialization/is_bitwise_serializable.hpp>
@@ -199,11 +200,14 @@ struct ParticleProperties {
   /** External force. */
   Utils::Vector3d ext_force = {0., 0., 0.};
   Utils::Vector3d visc_force = {0., 0., 0.};
-  double qv = 0.;
-  double taum = 0.;
-  double vcrit = 0.;
-  double aexp = 0.;
-  double bexp = 0.;
+  Utils::Vector3d visc_gamma = {0., 0., 0.};
+  Utils::Matrix<double, 20, 3> visc_force_mat = {};
+  Utils::Vector<double,20> qv = {};
+  Utils::Vector<double,20> taum = {};
+  Utils::Vector<double,20> vcrit = {};
+  Utils::Vector<double,20> aexp = {};
+  Utils::Vector<double,20> bexp = {};
+  int Nk = 0;
 #ifdef ROTATION
   /** External torque. */
   Utils::Vector3d ext_torque = {0., 0., 0.};
@@ -255,11 +259,14 @@ struct ParticleProperties {
     ar &ext_flag;
     ar &ext_force;
     ar &visc_force;
+    ar &visc_force_mat;
+    ar &visc_gamma;
     ar &qv;
     ar &taum;
     ar &vcrit;
     ar &aexp;
     ar &bexp;
+    ar &Nk;
 #ifdef ROTATION
     ar &ext_torque;
 #endif
@@ -567,6 +574,10 @@ public:
   auto &ext_force() { return p.ext_force; }
   auto const &visc_force() const { return p.visc_force; }
   auto &visc_force() { return p.visc_force; }
+  auto const &visc_force_mat() const { return p.visc_force_mat; }
+  auto &visc_force_mat() { return p.visc_force_mat; }
+  auto const &visc_gamma() const { return p.visc_gamma; }
+  auto &visc_gamma() { return p.visc_gamma; }
   auto const &qv() const { return p.qv; }
   auto &qv() { return p.qv; }
   auto const &taum() const { return p.taum; }
@@ -577,6 +588,8 @@ public:
   auto &aexp() { return p.aexp; }
   auto const &bexp() const { return p.bexp; }
   auto &bexp() { return p.bexp; }
+  auto const &Nk() const { return p.Nk; }
+  auto &Nk() { return p.Nk; }
 #else  // EXTERNAL_FORCES
   constexpr bool has_fixed_coordinates() const { return false; }
   constexpr bool is_fixed_along(int const) const { return false; }
