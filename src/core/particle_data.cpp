@@ -138,13 +138,13 @@ using UpdatePropertyMessage = boost::variant
         , UpdateProperty<Utils::Vector3d, &Prop::ext_force>
         , UpdateProperty<Utils::Vector3d, &Prop::visc_force>
         , UpdateProperty<Utils::Matrix<double,20,3>, &Prop::visc_force_mat>
-        , UpdateProperty<Utils::Vector3d, &Prop::visc_gamma>
-        , UpdateProperty<Utils::Vector<double,20>, &Prop::qv>
+        , UpdateProperty<Utils::Vector3d, &Prop::visc_gamma_vec>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::visc_gamma>
         , UpdateProperty<Utils::Vector<double,20>, &Prop::taum>
         , UpdateProperty<Utils::Vector<double,20>, &Prop::vcrit>
         , UpdateProperty<Utils::Vector<double,20>, &Prop::aexp>
         , UpdateProperty<Utils::Vector<double,20>, &Prop::bexp>
-        , UpdateProperty<int, &Prop::Nk>
+        , UpdateProperty<int, &Prop::Nm>
 #ifdef ROTATION
         , UpdateProperty<Utils::Vector3d, &Prop::ext_torque>
 #endif
@@ -629,18 +629,18 @@ void set_particle_visc_force_mat(int part, const Utils::Matrix<double,20,3> &for
 }
 
 // VISCOELASTIC GAMMA
-void set_particle_visc_gamma(int part, const Utils::Vector3d &visc_gamma) {
-  mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::visc_gamma>(
-      part, visc_gamma);
+void set_particle_visc_gamma_vec(int part, const Utils::Vector3d &visc_gamma_vec) {
+  mpi_update_particle_property<Utils::Vector3d, &ParticleProperties::visc_gamma_vec>(
+      part, visc_gamma_vec);
 }
 
 // VISCOELASTIC PARAMETER q
-void set_particle_qv(int part, const std::vector<double> &qv) {
+void set_particle_visc_gamma(int part, const std::vector<double> &visc_gamma) {
   Utils::Vector<double,20> utilsVector;
   for (std::size_t i = 0; i < 20; ++i) {
-    utilsVector[i] = qv[i];
+    utilsVector[i] = visc_gamma[i];
   }
-  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::qv>(part, utilsVector);
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::visc_gamma>(part, utilsVector);
 }
 
 // VISCOELASTIC PARAMETER taum
@@ -680,8 +680,8 @@ void set_particle_bexp(int part, const std::vector<double> &bexp) {
 }
 
 // NUMBER OF PRONY MODES
-void set_particle_Nk(int part, int Nk) {
-  mpi_update_particle_property<int, &ParticleProperties::Nk>(part, Nk);
+void set_particle_Nm(int part, int Nm) {
+  mpi_update_particle_property<int, &ParticleProperties::Nm>(part, Nm);
 }
 
 void set_particle_fix(int part, Utils::Vector3i const &flag) {

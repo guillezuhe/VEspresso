@@ -162,7 +162,7 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
   std::normal_distribution<> gaussianDist(0,1);
 
   for (auto &p : particles) {
-    if (p.qv()[0] > 0) {
+    if (p.visc_gamma()[0] > 0) {
       /* Computation of velocity modulus squared */
       vmod2 = 0.0;
       for (int j = 0; j < 3; j++) {
@@ -170,8 +170,8 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
       }
 
       /* Update of the viscoelastic force */
-      for (int k = 0; k < p.Nk(); k++) {
-        visc = calc_viscosity(vmod2, p.qv()[k] * p.visc_gamma()[0], p.vcrit()[k], p.aexp()[k], p.bexp()[k]);
+      for (int k = 0; k < p.Nm(); k++) {
+        visc = calc_viscosity(vmod2, p.visc_gamma()[k] * p.visc_gamma_vec()[0], p.vcrit()[k], p.aexp()[k], p.bexp()[k]);
         nu = 1.0 / p.taum()[k];
         for (int j = 0; j < 3; j++) {
           if ((!p.is_fixed_along(j)) && thermo_switch) {

@@ -194,4 +194,11 @@ $$
 
 This espresso version works in the same fashion of the main version. To include carrier medium viscoelasticity, we just need to define the involved parameters and pass them to espresso through the python interface.
 
-The viscoelastic parameters have been introduced in espresso as particle properties so that they can be individually defined. However, for monodisperse particles in isotropic mediums, parameters are expected to take the same value for all the particle set.
+The viscoelastic parameters have been introduced in espresso as particle properties so that they can be individually defined. However, for monodisperse particles in isotropic mediums, parameters are expected to take the same value for all the particle set. We detail bellow the list of new parameters and their implications.
+
+* ```Nm``` &nbsp; (int) Number of Prony modes. This variable defines how many decaying exponentials must will be fitted to the memory function. A maximum of $N_m = 20$ modes are allowed.
+* ```gamma_visc``` &nbsp; (array of length 20) Viscoelastic friction coefficients $\zeta_m$. Espresso will consider only the first Nm elements of the vector, the rest should be set to zero. This espresso version will only consider viscoelasticity if at least the first value of this vector is not zero and $N_m \ge 1$.
+* ```taum``` &nbsp; (array of length 20) Relaxation times of the Prony modes $\tau_m$. This vector behaves exactly as ```gamma_visc```, where only the first $N_m$ elements will be considered and the rest should be zero.
+* ```vcrit``` &nbsp; (array of length 20) Critical velocities $v_c$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
+* ```aexp``` &nbsp; (array of length 20) Exponent $a$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
+* ```bexp``` &nbsp; (array of length 20) Exponent $b$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.

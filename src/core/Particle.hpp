@@ -200,14 +200,14 @@ struct ParticleProperties {
   /** External force. */
   Utils::Vector3d ext_force = {0., 0., 0.};
   Utils::Vector3d visc_force = {0., 0., 0.};
-  Utils::Vector3d visc_gamma = {0., 0., 0.};
+  Utils::Vector3d visc_gamma_vec = {1., 1., 1.};
   Utils::Matrix<double, 20, 3> visc_force_mat = {};
-  Utils::Vector<double,20> qv = {};
+  Utils::Vector<double,20> visc_gamma = {};
   Utils::Vector<double,20> taum = {};
   Utils::Vector<double,20> vcrit = {};
   Utils::Vector<double,20> aexp = {};
   Utils::Vector<double,20> bexp = {};
-  int Nk = 0;
+  int Nm = 0;
 #ifdef ROTATION
   /** External torque. */
   Utils::Vector3d ext_torque = {0., 0., 0.};
@@ -260,13 +260,13 @@ struct ParticleProperties {
     ar &ext_force;
     ar &visc_force;
     ar &visc_force_mat;
+    ar &visc_gamma_vec;
     ar &visc_gamma;
-    ar &qv;
     ar &taum;
     ar &vcrit;
     ar &aexp;
     ar &bexp;
-    ar &Nk;
+    ar &Nm;
 #ifdef ROTATION
     ar &ext_torque;
 #endif
@@ -576,10 +576,10 @@ public:
   auto &visc_force() { return p.visc_force; }
   auto const &visc_force_mat() const { return p.visc_force_mat; }
   auto &visc_force_mat() { return p.visc_force_mat; }
+  auto const &visc_gamma_vec() const { return p.visc_gamma_vec; }
+  auto &visc_gamma_vec() { return p.visc_gamma_vec; }
   auto const &visc_gamma() const { return p.visc_gamma; }
   auto &visc_gamma() { return p.visc_gamma; }
-  auto const &qv() const { return p.qv; }
-  auto &qv() { return p.qv; }
   auto const &taum() const { return p.taum; }
   auto &taum() { return p.taum; }
   auto const &vcrit() const { return p.vcrit; }
@@ -588,8 +588,8 @@ public:
   auto &aexp() { return p.aexp; }
   auto const &bexp() const { return p.bexp; }
   auto &bexp() { return p.bexp; }
-  auto const &Nk() const { return p.Nk; }
-  auto &Nk() { return p.Nk; }
+  auto const &Nm() const { return p.Nm; }
+  auto &Nm() { return p.Nm; }
 #else  // EXTERNAL_FORCES
   constexpr bool has_fixed_coordinates() const { return false; }
   constexpr bool is_fixed_along(int const) const { return false; }

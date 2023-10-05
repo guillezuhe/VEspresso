@@ -227,9 +227,9 @@ void set_particle_visc_force(int part, const Utils::Vector3d &force);
  */
 void set_particle_visc_force_mat(int part, const Utils::Matrix<double,20,3> &force_mat);
 
-void set_particle_visc_gamma(int part, const Utils::Vector3d &visc_gamma);
+void set_particle_visc_gamma_vec(int part, const Utils::Vector3d &visc_gamma_vec);
 
-void set_particle_qv(int part, const std::vector<double> &qv);
+void set_particle_visc_gamma(int part, const std::vector<double> &visc_gamma);
 
 void set_particle_taum(int part, const std::vector<double> &taum);
 

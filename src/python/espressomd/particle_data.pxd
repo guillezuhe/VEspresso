@@ -66,13 +66,13 @@ cdef extern from "Particle.hpp":
         bint is_virtual()
         Vector3d ext_force()
         Vector3d visc_force()
-        Vector3d visc_gamma()
-        vector[double] qv()
+        Vector3d visc_gamma_vec()
+        vector[double] visc_gamma()
         vector[double] taum()
         vector[double] vcrit()
         vector[double] aexp()
         vector[double] bexp()
-        int Nk()
+        int Nm()
         Vector3d ext_torque()
         vector[int] exclusions_as_vector() except +
         bool has_exclusion(int pid) except +
@@ -148,13 +148,13 @@ cdef extern from "particle_data.hpp":
 
         void set_particle_ext_force(int part, const Vector3d & force)
         void set_particle_visc_force(int part, const Vector3d & force)
-        void set_particle_visc_gamma(int npart, const Vector3d & visc_gamma)
-        void set_particle_qv(int part, vector[double] & qv)
+        void set_particle_visc_gamma_vec(int part, const Vector3d & visc_gamma_vec)
+        void set_particle_visc_gamma(int part, vector[double] & visc_gamma)
         void set_particle_taum(int part, vector[double] & taum)
         void set_particle_vcrit(int part, vector[double] & vcrit)
         void set_particle_aexp(int part, vector[double] & aexp)
         void set_particle_bexp(int part, vector[double] & bexp)
-        void set_particle_Nk(int part, int Nk)
+        void set_particle_Nm(int part, int Nm)
 
         void set_particle_fix(int part, const Vector3i & flag)
         Vector3i get_particle_fix(const particle * p)

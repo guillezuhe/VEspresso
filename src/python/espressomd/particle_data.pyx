@@ -815,11 +815,11 @@ cdef class ParticleHandle:
                 return make_array_locked(
                     self.particle_data.visc_force())
 
-        property visc_gamma:
+        property visc_gamma_vec:
             """
             The viscoelastic friction coefficient of the particle.
 
-            visc_gamma : (3,) array_like of :obj:`float`
+            visc_gamma_vec : (3,) array_like of :obj:`float`
 
             .. note::
                This needs the feature ``EXTERNAL_FORCES``.
@@ -828,43 +828,38 @@ cdef class ParticleHandle:
 
             def __set__(self, _visc_g):
                 check_type_or_throw_except(
-                    _visc_g, 3, float, "Viscoelastic force vector has to be 3 floats.")
-                set_particle_visc_gamma(self._id, make_Vector3d(_visc_g))
+                    _visc_g, 3, float, "Viscoelastic gamma vector has to be 3 floats.")
+                set_particle_visc_gamma_vec(self._id, make_Vector3d(_visc_g))
 
             def __get__(self):
                 self.update_particle_data()
                 return make_array_locked(
-                    self.particle_data.visc_gamma())
+                    self.particle_data.visc_gamma_vec())
         
-        property qv:
+        property visc_gamma:
             """
             Viscoelastic ratio gammaM / gammaN.
 
-            qv : (Nk,) array_like of :obj:`double`
+            visc_gamma : (Nm,) array_like of :obj:`double`
 
             .. note::
                This needs the feature ``EXTERNAL FORCES``.
             """
 
-            def __set__(self, _qv):
+            def __set__(self, _visc_gamma):
                 check_type_or_throw_except(
-                    _qv, 20, float, "qv has to be a array-like of length 20.")
-                set_particle_qv(self._id, _qv)
+                    _visc_gamma, 20, float, "visc_gamma has to be a array-like of length 20.")
+                set_particle_visc_gamma(self._id, _visc_gamma)
 
             def __get__(self):
                 self.update_particle_data()
-                cdef vector[double] qv
-                qv = self.particle_data.qv()
-                return array_locked([qv[0], qv[1], qv[2], qv[3],
-                 qv[4], qv[5], qv[6], qv[7], qv[8], qv[9], qv[10], 
-                 qv[11], qv[12], qv[13], qv[14], qv[15], qv[16], 
-                 qv[17], qv[18], qv[19]])
+                return array_locked(self.particle_data.visc_gamma())
 
         property taum:
             """
             Viscoelastic relaxation time.
 
-            taum : (Nk,) array_like of :obj:`double`
+            taum : (Nm,) array_like of :obj:`double`
 
             .. note::
                This needs the feature ``EXTERNAL FORCES``.
@@ -877,18 +872,13 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                cdef vector[double] taum
-                taum = self.particle_data.taum()
-                return array_locked([taum[0], taum[1], taum[2], taum[3],
-                 taum[4], taum[5], taum[6], taum[7], taum[8], taum[9], taum[10], 
-                 taum[11], taum[12], taum[13], taum[14], taum[15], taum[16], 
-                 taum[17], taum[18], taum[19]])
+                return array_locked(self.particle_data.taum())
 
         property vcrit:
             """
             Viscoelastic critical velocity.
 
-            vcrit : (Nk,) array_like of :obj:`double`
+            vcrit : (Nm,) array_like of :obj:`double`
 
             .. note::
                This needs the feature ``EXTERNAL FORCES``.
@@ -901,18 +891,13 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                cdef vector[double] vcrit
-                vcrit = self.particle_data.vcrit()
-                return array_locked([vcrit[0], vcrit[1], vcrit[2], vcrit[3],
-                 vcrit[4], vcrit[5], vcrit[6], vcrit[7], vcrit[8], vcrit[9], vcrit[10], 
-                 vcrit[11], vcrit[12], vcrit[13], vcrit[14], vcrit[15], vcrit[16], 
-                 vcrit[17], vcrit[18], vcrit[19]])
+                return array_locked(self.particle_data.vcrit())
 
         property aexp:
             """
             Viscoelastic viscosity exponent a.
 
-            aexp : (Nk,) array_like of :obj:`double`
+            aexp : (Nm,) array_like of :obj:`double`
 
             .. note::
                This needs the feature ``EXTERNAL FORCES``.
@@ -925,18 +910,13 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                cdef vector[double] aexp
-                aexp = self.particle_data.aexp()
-                return array_locked([aexp[0], aexp[1], aexp[2], aexp[3],
-                 aexp[4], aexp[5], aexp[6], aexp[7], aexp[8], aexp[9], aexp[10], 
-                 aexp[11], aexp[12], aexp[13], aexp[14], aexp[15], aexp[16], 
-                 aexp[17], aexp[18], aexp[19]])
+                return array_locked(self.particle_data.aexp())
 
         property bexp:
             """
             Viscoelastic viscosity exponent b.
 
-            bexp : (Nk,) array_like of :obj:`double`
+            bexp : (Nm,) array_like of :obj:`double`
 
             .. note::
                This needs the feature ``EXTERNAL FORCES``.
@@ -949,33 +929,28 @@ cdef class ParticleHandle:
 
             def __get__(self):
                 self.update_particle_data()
-                cdef vector[double] bexp
-                bexp = self.particle_data.bexp()
-                return ([bexp[0], bexp[1], bexp[2], bexp[3],
-                 bexp[4], bexp[5], bexp[6], bexp[7], bexp[8], bexp[9], bexp[10], 
-                 bexp[11], bexp[12], bexp[13], bexp[14], bexp[15], bexp[16], 
-                 bexp[17], bexp[18], bexp[19]])
+                return array_locked(self.particle_data.bexp())
 
-        property Nk:
+        property Nm:
             """
             The number of Prony modes of the Particle.
 
-            Nk : :obj:`int`
+            Nm : :obj:`int`
 
             .. note::
-            The value of ``Nk`` has to be an integer >= 0.
+            The value of ``Nm`` has to be an integer >= 0.
 
             """
 
-            def __set__(self, _Nk):
-                if is_valid_type(_Nk, int) and _Nk >= 0:
-                    set_particle_Nk(self._id, _Nk)
+            def __set__(self, _Nm):
+                if is_valid_type(_Nm, int) and _Nm >= 0:
+                    set_particle_Nm(self._id, _Nm)
                 else:
-                    raise ValueError("Nk must be an integer >= 0")
+                    raise ValueError("Nm must be an integer >= 0")
 
             def __get__(self):
                 self.update_particle_data()
-                return self.particle_data.Nk()
+                return self.particle_data.Nm()
              
         property fix:
             """
