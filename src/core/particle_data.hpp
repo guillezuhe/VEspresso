@@ -210,6 +210,18 @@ void set_particle_gamma_rot(int part, Utils::Vector3d const &gamma_rot);
  *  @param torque new value for ext_torque.
  */
 void set_particle_ext_torque(int part, const Utils::Vector3d &torque);
+/** Call only on the head node: set particle viscoelastic torque.
+ *  @param part  the particle.
+ *  @param torque new value for visc_torque.
+ */
+void set_particle_visc_torque(int part, const Utils::Vector3d &torque);
+/** Call only on the head node: set particle viscoelastic torque matrix.
+ *  @param part  the particle.
+ *  @param torque_mat new value for visc_torque_mat.
+ */
+void set_particle_visc_torque_mat(int part, const Utils::Matrix<double,20,3> &torque_mat);
+
+void set_particle_omegacrit(int part, const std::vector<double> &omegacrit);
 #endif
 /** Call only on the head node: set particle external force.
  *  @param part  the particle.

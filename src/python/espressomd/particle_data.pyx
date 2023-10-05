@@ -951,6 +951,46 @@ cdef class ParticleHandle:
             def __get__(self):
                 self.update_particle_data()
                 return self.particle_data.Nm()
+
+        property visc_torque:
+            """
+            An additional viscoelastic torque applied to the particle.
+
+            visc_torque : (3,) array_like of :obj:`float`
+
+            .. note::
+               This needs the feature ``EXTERNAL_FORCES``.
+
+            """
+
+            def __set__(self, _visc_t):
+                check_type_or_throw_except(
+                    _visc_t, 3, float, "Viscoelastic torque vector has to be 3 floats.")
+                set_particle_visc_torque(self._id, make_Vector3d(_visc_t))
+
+            def __get__(self):
+                self.update_particle_data()
+                return make_array_locked(
+                    self.particle_data.visc_torque())
+
+        property omegacrit:
+            """
+            Viscoelastic critical angular velocity.
+
+            omegacrit : (Nm,) array_like of :obj:`double`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _omegacrit):
+                check_type_or_throw_except(
+                    _omegacrit, 20, float, "omegacrit has to be a array-like of length 20.")
+                set_particle_omegacrit(self._id, _omegacrit)
+
+            def __get__(self):
+                self.update_particle_data()
+                return array_locked(self.particle_data.omegacrit())
              
         property fix:
             """

@@ -152,6 +152,10 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
   double vmod2 = 0.0;
   double visc = 0.0;
   double nu = 0.0;
+  double randomG = 0.0;
+  double omegamod2 = 0.0;
+  double viscr = 0.0;
+  double randomGr = 0.0;
 
   /*
     RANDOM NUMBERS NEEDED
@@ -175,14 +179,39 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
         nu = 1.0 / p.taum()[k];
         for (int j = 0; j < 3; j++) {
           if ((!p.is_fixed_along(j)) && thermo_switch) {
-            double randomG = gaussianDist(gen);
+            randomG = gaussianDist(gen);
             p.visc_force_mat()(k,j) -= ((nu * p.visc_force_mat()(k,j) + p.v()[j]) * time_step + \
             sqrt(2 * kT * time_step / visc) * randomG);
-            p.visc_force()[j] = p.visc_force_mat()(k,j);
+            /* p.visc_force()[j] = p.visc_force_mat()(k,j); */
+            p.force()[j] += nu * visc * p.visc_force_mat()(k,j);
           }
         }
-        p.f += nu * visc * p.visc_force();
       }
+
+      if (!p.can_rotate())
+        continue;
+
+      /* Computation of angular velocity modulus squared */
+      omegamod2 = 0.0;
+      for (int j = 0; j < 3; j++) {
+        omegamod2 += p.omega()[j] * p.omega()[j];
+      }
+
+      /* Update the viscoelastic torque */
+      for (int k=0; k < p.Nm(); k++) {
+        viscr = 4.0 / 3.0 * calc_viscosity(omegamod2, p.visc_gamma()[k] * p.visc_gamma_vec()[0], p.omegacrit()[k], p.aexp()[k], p.bexp()[k]);
+        nu = 1.0 / p.taum()[k];
+        for (int j = 0; j < 3; j++) {  
+          if (p.can_rotate_around(j) && thermo_switch) {
+            randomGr = gaussianDist(gen);
+            p.visc_torque_mat()(k,j) -= ((nu * p.visc_torque_mat()(k,j) + p.omega()[j]) * time_step + \
+            sqrt(2 * kT * time_step / viscr) * randomGr);
+            /* p.visc_torque()[j] = p.visc_torque_mat()(k,j); */
+            p.torque()[j] += nu * viscr * p.visc_torque_mat()(k,j);
+          }
+        }
+      }
+
     }
   }
 }

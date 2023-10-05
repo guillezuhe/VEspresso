@@ -211,6 +211,9 @@ struct ParticleProperties {
 #ifdef ROTATION
   /** External torque. */
   Utils::Vector3d ext_torque = {0., 0., 0.};
+  Utils::Vector3d visc_torque = {0., 0., 0.};
+  Utils::Matrix<double, 20, 3> visc_torque_mat = {};
+  Utils::Vector<double,20> omegacrit = {};
 #endif // ROTATION
 #endif // EXTERNAL_FORCES
 
@@ -269,6 +272,9 @@ struct ParticleProperties {
     ar &Nm;
 #ifdef ROTATION
     ar &ext_torque;
+    ar &visc_torque;
+    ar &visc_torque_mat;
+    ar &omegacrit;
 #endif
 #endif // EXTERNAL_FORCES
 
@@ -513,6 +519,12 @@ public:
   auto const &ext_torque() const { return p.ext_torque; }
   auto &ext_torque() { return p.ext_torque; }
   auto calc_director() const { return r.calc_director(); }
+  auto const &visc_torque() const { return p.visc_torque; }
+  auto &visc_torque() { return p.visc_torque; }
+  auto const &visc_torque_mat() const { return p.visc_torque_mat; }
+  auto &visc_torque_mat() { return p.visc_torque_mat; }
+  auto const &omegacrit() const { return p.omegacrit; }
+  auto &omegacrit() { return p.omegacrit; }
 #else  // ROTATION
   bool can_rotate() const { return false; }
   bool can_rotate_around(int const axis) const { return false; }
