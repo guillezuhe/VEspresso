@@ -239,7 +239,7 @@ void set_particle_aexp(int part, const std::vector<double> &aexp);
 
 void set_particle_bexp(int part, const std::vector<double> &bexp);
 
-void set_particle_Nk(int part, int Nk);
+void set_particle_Nm(int part, int Nm);
 
 /** Call only on the head node: set coordinate axes for which the particles
  *  motion is fixed.
