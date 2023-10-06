@@ -192,13 +192,31 @@ $$
 
 ## Espresso implementation
 
-This espresso version works in the same fashion of the main version. To include carrier medium viscoelasticity, we just need to define the involved parameters and pass them to espresso through the python interface.
+This espresso version works in the same fashion of the main version. To include carrier medium viscoelasticity, it is mandatory to set a thermostat. In case you do not want to include brownian motion, just set ```kT = 0```. Along with the thermostat, we need to define the involved parameters in viscoelasticity and pass them to espresso through the python interface.
 
 The viscoelastic parameters have been introduced in espresso as particle properties so that they can be individually defined. However, for monodisperse particles in isotropic mediums, parameters are expected to take the same value for all the particle set. We detail bellow the list of new parameters and their implications.
 
 * ```Nm``` &nbsp; (int) Number of Prony modes. This variable defines how many decaying exponentials must will be fitted to the memory function. A maximum of $N_m = 20$ modes are allowed.
-* ```gamma_visc``` &nbsp; (array of length 20) Viscoelastic friction coefficients $\zeta_m$. Espresso will consider only the first Nm elements of the vector, the rest should be set to zero. This espresso version will only consider viscoelasticity if at least the first value of this vector is not zero and $N_m \ge 1$.
+* ```visc_gamma``` &nbsp; (array of length 20) Viscoelastic friction coefficients $\zeta_m$. Espresso will consider only the first Nm elements of the vector, the rest should be set to zero. This espresso version will only consider viscoelasticity if at least the first value of this vector is not zero and $N_m \ge 1$.
 * ```taum``` &nbsp; (array of length 20) Relaxation times of the Prony modes $\tau_m$. This vector behaves exactly as ```gamma_visc```, where only the first $N_m$ elements will be considered and the rest should be zero.
 * ```vcrit``` &nbsp; (array of length 20) Critical velocities $v_c$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
 * ```aexp``` &nbsp; (array of length 20) Exponent $a$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
 * ```bexp``` &nbsp; (array of length 20) Exponent $b$ for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
+
+**Rotational motion**
+
+Rotational viscoelastic friction is also included and will be computed as long as rotation around at least one axis is allowed. Nonetheless, a few additional parameters must be defined to account for this rotational motion.
+
+* ```vis_gamma_rot``` &nbsp; (array of length 20) Viscoelastic rotational friction coefficients $\zeta_{mR}$. Espresso will consider only the first Nm elements of the vector, the rest should be set to zero. If not defined, the program will assume ```visc_gamma_rot = visc_gamma```. It is worth noting that the Einstein relation implies $\zeta_{mR} = \zeta_m \frac{4}{3}r^2$, where r is the radius of the particle.
+* ```omegacrit``` &nbsp; (array of length 20) Critical angular velocity for the Carreau-Yasuda viscosity function of the Prony modes. Only the first $N_m$ elements are considered.
+
+Lastly, it is important to remark that the newtonian and viscoelastic contributions can be controlled independently. The Newtonian contribution to the friction and Brownian motion is set by the friction coefficients ```gamma``` and ```gamma_rotation``` of the thermostat. As an example, when considering a Jeffreys fluid, the Newtonian friction must be included and set to a value ```gamma =``` $\zeta$ and the Maxwell mode(s) will be controlled by the ```visc_gamma``` vector. On the opposite, when working with purely viscoelastic fluids, as Maxwell model, Power-law or Rouse, the Newtonian term must be set to zero (```gamma = 0```).
+
+**Integrators available**
+
+This modified version has been tested with **Langevin** and **Brownian Dynamics** integrators. However, some considerations need to be done:
+
+* Langevin integrator works exactly the same as the original Espresso version.
+* Brownian Dynamics does not work straightforwardly the way it is implemented in Espresso. First of all, it will only work when the Newtonian friction is included and greater than zero, as the positions are updated following $\; \Delta \bold{r} = \bold{F} / \zeta$. Moreover, when including Brownian motion, that is ```kT > 0```, the velocity computed by espresso is not valid for the $U_m$ determination, because it includes a random noise uncorrelated with the position noise. To solve that (at the moment), the only possible solution is to compute the proper velocity outside espresso in and return it again through the python interface. You must run the integrator for just one step at a time, then compute the velocity as $v^n = (x^n - x^{n-1}) / \Delta t$, and eventually giving this value to ```particle.v```.
+
+
