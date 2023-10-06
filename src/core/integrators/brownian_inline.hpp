@@ -31,17 +31,24 @@
 #include "thermostats/brownian_inline.hpp"
 
 #include <utils/math/sqr.hpp>
+#include <utils/Vector.hpp>
 
 inline void brownian_dynamics_propagator(BrownianThermostat const &brownian,
                                          const ParticleRange &particles,
                                          double time_step, double kT) {
+
+  Utils::Vector3d pos_random_walk = {0., 0., 0.};
   for (auto &p : particles) {
     // Don't propagate translational degrees of freedom of vs
     if (!p.is_virtual() or thermo_virtual) {
       p.pos() += bd_drag(brownian.gamma, p, time_step);
       p.v() = bd_drag_vel(brownian.gamma, p);
-      p.pos() += bd_random_walk(brownian, p, time_step, kT);
+      pos_random_walk = bd_random_walk(brownian, p, time_step, kT);
+      p.pos() += pos_random_walk;
+      p.v() += pos_random_walk / time_step;
+      /*
       p.v() += bd_random_walk_vel(brownian, p);
+      */
 #ifdef ROTATION
       if (!p.can_rotate())
         continue;
@@ -49,7 +56,10 @@ inline void brownian_dynamics_propagator(BrownianThermostat const &brownian,
       p.quat() = bd_drag_rot(brownian.gamma_rotation, p, time_step);
       p.omega() = bd_drag_vel_rot(brownian.gamma_rotation, p);
       p.quat() = bd_random_walk_rot(brownian, p, time_step, kT);
+      /*
+      In this case, the random walk to is included inside bd_random_walk_rot function.
       p.omega() += bd_random_walk_vel_rot(brownian, p);
+      */
 #endif // ROTATION
     }
   }

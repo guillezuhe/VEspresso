@@ -323,7 +323,7 @@ bd_drag_vel_rot(Thermostat::GammaType const &brownian_gamma_rotation,
  *  @param[in]     kT             Temperature
  */
 inline Utils::Quaternion<double>
-bd_random_walk_rot(BrownianThermostat const &brownian, Particle const &p,
+bd_random_walk_rot(BrownianThermostat const &brownian, Particle &p,
                    double dt, double kT) {
 
   Thermostat::GammaType sigma_pos = brownian.sigma_pos_rotation;
@@ -346,10 +346,12 @@ bd_random_walk_rot(BrownianThermostat const &brownian, Particle const &p,
 #ifndef PARTICLE_ANISOTROPY
       if (sigma_pos > 0.0) {
         dphi[j] = noise[j] * sigma_pos * sqrt(dt);
+        p.omega()[j] += dphi[j] / dt;
       }
 #else
       if (sigma_pos[j] > 0.0) {
         dphi[j] = noise[j] * sigma_pos[j] * sqrt(dt);
+        p.omega()[j] += dphi[j] / dt;
       }
 #endif // PARTICLE_ANISOTROPY
     }
