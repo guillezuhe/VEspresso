@@ -150,6 +150,7 @@ using UpdatePropertyMessage = boost::variant
         , UpdateProperty<Utils::Vector3d, &Prop::visc_torque>
         , UpdateProperty<Utils::Matrix<double,20,3>, &Prop::visc_torque_mat>
         , UpdateProperty<Utils::Vector<double,20>, &Prop::omegacrit>
+        , UpdateProperty<Utils::Vector<double,20>, &Prop::visc_gamma_rot>
 #endif
 #endif
         >;
@@ -632,6 +633,15 @@ void set_particle_omegacrit(int part, const std::vector<double> &omegacrit) {
     utilsVector[i] = omegacrit[i];
   }
   mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::omegacrit>(part, utilsVector);
+}
+
+// VISCOELASTIC PARAMETER visc_gamma_rot
+void set_particle_visc_gamma_rot(int part, const std::vector<double> &visc_gamma_rot) {
+  Utils::Vector<double,20> utilsVector;
+  for (std::size_t i = 0; i < 20; ++i) {
+    utilsVector[i] = visc_gamma_rot[i];
+  }
+  mpi_update_particle_property<Utils::Vector<double,20>, &ParticleProperties::visc_gamma_rot>(part, utilsVector);
 }
 #endif // ROTATION
 

@@ -991,6 +991,25 @@ cdef class ParticleHandle:
             def __get__(self):
                 self.update_particle_data()
                 return array_locked(self.particle_data.omegacrit())
+
+        property visc_gamma_rot:
+            """
+            Viscoelastic rotational friction coefficient.
+
+            visc_gamma_rot : (Nm,) array_like of :obj:`double`
+
+            .. note::
+               This needs the feature ``EXTERNAL FORCES``.
+            """
+
+            def __set__(self, _visc_gamma_rot):
+                check_type_or_throw_except(
+                    _visc_gamma_rot, 20, float, "visc_gamma has to be a array-like of length 20.")
+                set_particle_visc_gamma_rot(self._id, _visc_gamma_rot)
+
+            def __get__(self):
+                self.update_particle_data()
+                return array_locked(self.particle_data.visc_gamma_rot())
              
         property fix:
             """

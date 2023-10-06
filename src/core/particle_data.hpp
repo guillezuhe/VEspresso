@@ -222,6 +222,8 @@ void set_particle_visc_torque(int part, const Utils::Vector3d &torque);
 void set_particle_visc_torque_mat(int part, const Utils::Matrix<double,20,3> &torque_mat);
 
 void set_particle_omegacrit(int part, const std::vector<double> &omegacrit);
+
+void set_particle_visc_gamma_rot(int part, const std::vector<double> &visc_gamma_rot);
 #endif
 /** Call only on the head node: set particle external force.
  *  @param part  the particle.

@@ -76,6 +76,7 @@ cdef extern from "Particle.hpp":
         Vector3d ext_torque()
         Vector3d visc_torque()
         vector[double] omegacrit()
+        vector[double] visc_gamma_rot()
         vector[int] exclusions_as_vector() except +
         bool has_exclusion(int pid) except +
         particle_parameters_swimming swimming()
@@ -149,6 +150,7 @@ cdef extern from "particle_data.hpp":
             void set_particle_ext_torque(int part, const Vector3d & torque)
             void set_particle_visc_torque(int part, const Vector3d & visc_torque)
             void set_particle_omegacrit(int part, vector[double] & omegacrit)
+            void set_particle_visc_gamma_rot(int part, vector[double] & visc_gamma_rot)
 
         void set_particle_ext_force(int part, const Vector3d & force)
         void set_particle_visc_force(int part, const Vector3d & force)

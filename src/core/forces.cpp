@@ -165,6 +165,7 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
   std::mt19937 gen(rd());
   std::normal_distribution<> gaussianDist(0,1);
 
+
   for (auto &p : particles) {
     if (p.visc_gamma()[0] > 0) {
       /* Computation of velocity modulus squared */
@@ -175,43 +176,42 @@ void viscoelastic_forces(const ParticleRange &particles, double time_step, doubl
 
       /* Update of the viscoelastic force */
       for (int k = 0; k < p.Nm(); k++) {
-        visc = calc_viscosity(vmod2, p.visc_gamma()[k] * p.visc_gamma_vec()[0], p.vcrit()[k], p.aexp()[k], p.bexp()[k]);
+        visc = calc_viscosity(vmod2, p.visc_gamma()[k], p.vcrit()[k], p.aexp()[k], p.bexp()[k]);
         nu = 1.0 / p.taum()[k];
         for (int j = 0; j < 3; j++) {
           if ((!p.is_fixed_along(j)) && thermo_switch) {
             randomG = gaussianDist(gen);
             p.visc_force_mat()(k,j) -= ((nu * p.visc_force_mat()(k,j) + p.v()[j]) * time_step + \
-            sqrt(2 * kT * time_step / visc) * randomG);
+            sqrt(2 * kT * time_step / (visc * p.visc_gamma_vec()[j])) * randomG);
             /* p.visc_force()[j] = p.visc_force_mat()(k,j); */
-            p.force()[j] += nu * visc * p.visc_force_mat()(k,j);
+            p.force()[j] += nu * visc * p.visc_gamma_vec()[j] * p.visc_force_mat()(k,j);
           }
         }
       }
 
-      if (!p.can_rotate())
-        continue;
+      if (p.can_rotate()) {
+        /* Computation of angular velocity modulus squared */
+        omegamod2 = 0.0;
+        for (int j = 0; j < 3; j++) {
+          omegamod2 += p.omega()[j] * p.omega()[j];
+        }
 
-      /* Computation of angular velocity modulus squared */
-      omegamod2 = 0.0;
-      for (int j = 0; j < 3; j++) {
-        omegamod2 += p.omega()[j] * p.omega()[j];
-      }
-
-      /* Update the viscoelastic torque */
-      for (int k=0; k < p.Nm(); k++) {
-        viscr = 4.0 / 3.0 * calc_viscosity(omegamod2, p.visc_gamma()[k] * p.visc_gamma_vec()[0], p.omegacrit()[k], p.aexp()[k], p.bexp()[k]);
-        nu = 1.0 / p.taum()[k];
-        for (int j = 0; j < 3; j++) {  
-          if (p.can_rotate_around(j) && thermo_switch) {
-            randomGr = gaussianDist(gen);
-            p.visc_torque_mat()(k,j) -= ((nu * p.visc_torque_mat()(k,j) + p.omega()[j]) * time_step + \
-            sqrt(2 * kT * time_step / viscr) * randomGr);
-            /* p.visc_torque()[j] = p.visc_torque_mat()(k,j); */
-            p.torque()[j] += nu * viscr * p.visc_torque_mat()(k,j);
+        /* Update the viscoelastic torque */
+        for (int k=0; k < p.Nm(); k++) {
+          if (p.visc_gamma_rot()[k] == 0) p.visc_gamma_rot()[k] = p.visc_gamma()[k];
+          viscr = calc_viscosity(omegamod2, p.visc_gamma_rot()[k], p.omegacrit()[k], p.aexp()[k], p.bexp()[k]);
+          nu = 1.0 / p.taum()[k];
+          for (int j = 0; j < 3; j++) {
+            if (p.can_rotate_around(j) && thermo_switch) {
+              randomGr = gaussianDist(gen);
+              p.visc_torque_mat()(k,j) -= ((nu * p.visc_torque_mat()(k,j) + p.omega()[j]) * time_step + \
+              sqrt(2 * kT * time_step / (viscr * p.visc_gamma_vec()[j])) * randomGr);
+              /* p.visc_torque()[j] = p.visc_torque_mat()(k,j); */
+              p.torque()[j] += nu * viscr * p.visc_gamma_vec()[j] * p.visc_torque_mat()(k,j);
+            }
           }
         }
       }
-
     }
   }
 }
