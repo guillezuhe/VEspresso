@@ -72,7 +72,7 @@ with $`\zeta_m = \tau_m \mathrm{K}_m`$. If $`W_{i,m}`$ is a standard Wiener proc
 and we can straightforwardly write:
 
 ```math
-F_i^r (t) = \sum_{k=m}^{N_m}{\mathrm{K}_m f_{i,m} (t)}
+F_i^r (t) = \sum_{m=1}^{N_m}{\mathrm{K}_m f_{i,m} (t)}
 ```
 
 Combining both results, we can define the final extended variable $`U_{i,m} (t) = Z_{i,m} (t) + f_{i,m} (t)`$ and achieve a final expression for our set of equations:
@@ -85,7 +85,7 @@ dU_{i,m} (t) = - \frac{1}{\tau_m} U_{i,m} (t) dt - v_i (t) dt + \sqrt{2 k_B T / 
 \end{dcases}
 ```
 
-It can be shown, that in the limit of small $`\tau_k`$, the GLE converges to a typical Langevin equation.
+It can be shown, that in the limit of small $`\tau_m`$, the GLE converges to a typical Langevin equation.
 
 ### Physical interpretation
 
