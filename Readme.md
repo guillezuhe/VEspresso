@@ -143,7 +143,7 @@ This power-law rheology is usually observed in many complex materials such as bi
 Another typical memory kernel is the **Rouse model**, another bead-spring model representative of diluted flexible polymers in Newtonian solvents. This model is just a sum of exponentials over the relaxation of the chain's normal modes, without any Newtonian contribution:
 
 ```math
-\Gamma = n k_B T \zeta \sum_{p=1}^{N} \exp{(-t / \tau_p)}
+\Gamma (t) = n k_B T \zeta \sum_{p=1}^{N} \exp{(-t / \tau_p)}
 ```
 
 with $`\tau_p = \frac{\zeta b^2 N^2}{6 \pi^2 k_B T p^2}`$.
