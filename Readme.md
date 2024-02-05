@@ -40,7 +40,7 @@ where $`\mathrm{K}_m`$ and $`\tau_m`$ are fitting parameters. We will discuss in
 Z_{i,m}(t) = - \int_{0}^{t}{\exp[- (t - t') / \tau_m] v_i (t') dt'} 
 ```
 
-and making use of $`Z_{i,k} (t)`$ we can rewrite the GLE for each spatial component:
+and making use of $`Z_{i,m} (t)`$ we can rewrite the GLE for each spatial component:
 
 ```math
 \begin{dcases}
@@ -49,7 +49,7 @@ dx_i (t) = v_i (t) dt
 \end{dcases}
 ```
 
-Now, instead of writing $`Z_{i,k} (t)`$ in integral form, we can write it in differential form to obtain a Stochastical Differential Equation (SDE).
+Now, instead of writing $`Z_{i,m} (t)`$ in integral form, we can write it in differential form to obtain a Stochastical Differential Equation (SDE).
 
 ```math
 dZ_{i,m} (t) = - \frac{1}{\tau_m} Z_{i,m} (t) dt - v_i (t) dt
@@ -60,7 +60,7 @@ This way, we can couple this equation with the previous set and solve them as a 
 Let us now face the contribution of the random force $`F^r`$ to make it obey the FDT. To this end, we consider the following SDE
 
 ```math
-df_{i,m} (t) = - \frac{1}{\tau_m} f_{i,k} (t) dt + \sqrt{2 k_B T / \zeta_m} dW_{i,m} (t) \; \; ,
+df_{i,m} (t) = - \frac{1}{\tau_m} f_{i,m} (t) dt + \sqrt{2 k_B T / \zeta_m} dW_{i,m} (t) \; \; ,
 ```
 
 with $`\zeta_m = \tau_m \mathrm{K}_m`$. If $`W_{i,m}`$ is a standard Wiener process, this SDE corresponds to an Ornstein-Uhlenbeck (OU) process. Using the OU properties, one can see that:
